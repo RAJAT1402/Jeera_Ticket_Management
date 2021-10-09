@@ -16,7 +16,7 @@ let closeContainer = document.querySelector(".multiply-container");
 input.addEventListener("keydown",function(e){
     if(e.code == "Enter" && input.value){
         let id = uid();
-        createTask(id,input.value,true);
+        createTask(id,input.value,defaultColor,true);
         input.value = "";
     }
 })
@@ -63,7 +63,7 @@ colorContainer.addEventListener("click",function(e){
                 allinputs[i].style.display = "none";
             }else{
                 allinputs[i].style.display = "block";
-                e.target.classList.add("active")
+                
             }
         }
     }else{
@@ -74,7 +74,7 @@ colorContainer.addEventListener("click",function(e){
     }
 })
 
-function createTask(id, task, flag){
+function createTask(id, task, defaultColor, flag){
     let taskContainer = document.createElement("div");
     taskContainer.setAttribute("class","task_container");
     mainContainer.appendChild(taskContainer);
@@ -87,7 +87,9 @@ function createTask(id, task, flag){
     </div>`
 
     let taskHeader = taskContainer.querySelector(".task_header");
-    taskHeader.addEventListener("click",function(){
+    let inputTask = taskContainer.querySelector(".task_main-container>div")
+
+  taskHeader.addEventListener("click",function(){
         //get all the classes 
         let cColor = taskHeader.classList[1];
         console.log(cColor);  
@@ -96,12 +98,50 @@ function createTask(id, task, flag){
         let nextColor = colors[nextIdx];
       taskHeader.classList.remove(cColor);
       taskHeader.classList.add(nextColor);
-    })
+
+    //   let idElem = taskHeader.parentNode.children[1].children[0];
+    //   let id = idElem.textContent;
+    //   id = id.split('#')[1];
+      let tasksString = localStorage.getItem("tasks");
+      let tasksArr = JSON.parse(tasksString)
+
+      for(let i = 0 ; i < tasksArr.length ; i++){
+          if(tasksArr[i].id == id){
+              tasksArr[i].color = nextColor;
+              break;
+          }
+      }
+      localStorage.setItem("tasks",JSON.stringify(tasksArr));
+  })
 
   taskContainer.addEventListener("click",function(){
       if(isclose == true){
           taskContainer.remove()
+
+        let tasksString = localStorage.getItem("tasks");
+        let tasksArr = JSON.parse(tasksString)
+
+        for(let i = 0 ; i < tasksArr.length ; i++){
+            if(tasksArr[i].id == id){
+                tasksArr.splice(i,1);
+                break;
+            }
+        }
+        localStorage.setItem("tasks",JSON.stringify(tasksArr));
       }
+  })
+
+  inputTask.addEventListener("blur", function(){
+      let content = inputTask.textContent;
+      let tasksString = localStorage.getItem("tasks");
+      let tasksArr = JSON.parse(tasksString);
+      for(let i = 0 ; i < tasksArr.length ; i++){
+          if(tasksArr[i].id == id){
+              tasksArr[i].task = content;
+              break;
+          }
+      }
+      localStorage.setItem("tasks", JSON.stringify(tasksArr));
   })
 
   //local storage add
@@ -111,18 +151,17 @@ function createTask(id, task, flag){
     let taskObject = {
         id : id,
         task : task,
-        color: cColor
+        color: defaultColor
     }
     tasksArr.push(taskObject);
     localStorage.setItem("tasks", JSON.stringify(tasksArr));
   }
 }
 
-
 (function(){
     let tasks = JSON.parse(localStorage.getItem("tasks"));
     for(let i = 0 ; i < tasks.length ; i++){
         let { id, task, color} = tasks[i];
-        createTask(id,task,false);
+        createTask(id,task,color,false);
     }
 })();
