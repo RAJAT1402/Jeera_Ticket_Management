@@ -4,20 +4,28 @@ let defaultColor = "black";
 let cFilter = "";
 let isclose = false;
 
-let input = document.querySelector(".task_input");
+let input = document.querySelector(".input_container_text");
 let mainContainer = document.querySelector(".main-container");
 let colorContainer = document.querySelector(".color-group_container");
 let lockContainer = document.querySelector(".lock-container");
 let unlockContainer = document.querySelector(".unlock-container");
 let plusContainer = document.querySelector(".plus-container");
 let closeContainer = document.querySelector(".multiply-container");
+let colorpicker = document.querySelector(".color_container");
+let modal = document.querySelector(".modal");
 
 
 input.addEventListener("keydown",function(e){
     if(e.code == "Enter" && input.value){
         let id = uid();
+        modal.style.display = "none";
         createTask(id,input.value,defaultColor,true);
         input.value = "";
+        let selectedColor = colorpicker.querySelector(".selected");
+        let blackColor = colorpicker.querySelector(".black");
+        selectedColor.classList.remove("selected");
+        blackColor.classList.add("selected");
+        defaultColor = "black";
     }
 })
 
@@ -26,7 +34,7 @@ lockContainer.addEventListener("click", function(e){
     for(let i = 0 ; i < numberOfElements.length ; i++){
         numberOfElements[i].contentEditable = false;
     }
-
+    
     lockContainer.classList.add("active")
     unlockContainer.classList.remove("active")
 })
@@ -50,6 +58,10 @@ closeContainer.addEventListener("click",function(){
     isclose = !isclose
 })
 
+plusContainer.addEventListener("click",function(){
+    modal.style.display = "flex"
+})
+
 colorContainer.addEventListener("click",function(e){
     let cColor = e.target.classList[1];
     let allinputs = document.querySelectorAll(".task_container");
@@ -71,6 +83,28 @@ colorContainer.addEventListener("click",function(e){
         for(let i = 0 ; i < allinputs.length ; i++){
             allinputs[i].style.display = "block";
         }
+    }
+})
+
+colorpicker.addEventListener("click",function(e){
+    let selectedColor = document.querySelector(".selected");
+    
+    if(e.target.classList[0] == "color_picker"){
+        selectedColor.classList.remove("selected");
+        e.target.classList.add("selected");
+        defaultColor = e.target.classList[1];
+    }
+})
+
+window.addEventListener("click",function(e) {
+    if(mainContainer == e.target){ 
+     modal.style.display= "none";
+     input.value = "";
+        let selectedColor = document.querySelector(".selected");
+        let blackColor = colorpicker.querySelector(".black");
+        selectedColor.classList.remove("selected");
+        blackColor.classList.add("selected");
+        defaultColor = "black";
     }
 })
 
@@ -156,6 +190,8 @@ function createTask(id, task, defaultColor, flag){
     tasksArr.push(taskObject);
     localStorage.setItem("tasks", JSON.stringify(tasksArr));
   }
+
+  defaultColor = "black";
 }
 
 (function(){
@@ -164,4 +200,5 @@ function createTask(id, task, defaultColor, flag){
         let { id, task, color} = tasks[i];
         createTask(id,task,color,false);
     }
+    modal.style.display = "none";
 })();

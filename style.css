@@ -1,3 +1,7 @@
+*{
+    box-sizing: border-box;
+}
+
 body{
     margin: 0px;
 }
@@ -82,6 +86,8 @@ body{
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
+    gap: 1rem;
+    overflow-y: scroll;
 }
 
 .task_container{
@@ -92,6 +98,16 @@ body{
 
 .task_main-container{
     padding: 0.5rem;
+    height: 6.5rem;
+}
+
+.text{
+    height: 80%;
+    overflow-y: scroll;
+}
+
+.text::-webkit-scrollbar {
+    display: none;
 }
 
 .task_header{
@@ -102,4 +118,59 @@ body{
     color: rgb(153, 153, 153);
     margin:0.3rem;
     margin-left: 0rem;
+}
+
+.modal{
+    height: 20rem;
+    width: 35rem;
+    background-color: white;
+    position: fixed;
+    top: calc(50% - 10rem);
+    left: calc(50% - (35/2)rem);
+    display: flex;
+    box-shadow: black;
+}
+
+.input_container{
+    height: 100%;
+    width: 70%;
+    border: 1px solid black;
+    padding: 2rem;
+}
+
+.input_container_text{
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 100;
+    font-family: sans-serif;
+}
+
+.color_container{
+    width: 30%;
+    height: 100%;
+    background-color: #343131;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.color_picker{
+    height: 3rem;
+    width: 6rem;
+}
+
+.selected{
+    border: 0.2rem solid white;
+}
+
+@media only screen and (max-width: 650px) {
+    html{ font-size: 10px;}
+}
+@media only screen and (max-width: 450px) {
+  html{ font-size: 7px;}
 }
