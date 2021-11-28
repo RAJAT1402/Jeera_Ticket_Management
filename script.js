@@ -3,17 +3,20 @@ let colors = ["pink","blue","green","black"];
 let defaultColor = "black";
 let cFilter = "";
 let isclose = false;
+let lockFlag = true;
+let body = document.body;
 
 let input = document.querySelector(".input_container_text");
 let mainContainer = document.querySelector(".main-container");
 let colorContainer = document.querySelector(".color-group_container");
-let lockContainer = document.querySelector(".lock-container");
-let unlockContainer = document.querySelector(".unlock-container");
+// let lockContainer = document.querySelector(".lock-container");
+// let unlockContainer = document.querySelector(".unlock-container");
+let lock = document.querySelector(".lock");
 let plusContainer = document.querySelector(".plus-container");
 let closeContainer = document.querySelector(".multiply-container");
 let colorpicker = document.querySelector(".color_container");
 let modal = document.querySelector(".modal");
-
+let infoBtn = document.querySelector(".information_container");
 
 input.addEventListener("keydown",function(e){
     if(e.code == "Enter" && input.value){
@@ -29,24 +32,43 @@ input.addEventListener("keydown",function(e){
     }
 })
 
-lockContainer.addEventListener("click", function(e){
-    let numberOfElements = document.querySelectorAll(".task_main-container>div")
-    for(let i = 0 ; i < numberOfElements.length ; i++){
-        numberOfElements[i].contentEditable = false;
-    }
+// lockContainer.addEventListener("click", function(e){
+//     let numberOfElements = document.querySelectorAll(".task_main-container>div")
+//     for(let i = 0 ; i < numberOfElements.length ; i++){
+//         numberOfElements[i].contentEditable = false;
+//     }
     
-    lockContainer.classList.add("active")
-    unlockContainer.classList.remove("active")
-})
+//     // lockContainer.classList.add("active")
+//     // unlockContainer.classList.remove("active")
+// })
 
-unlockContainer.addEventListener("click", function(e){
-    let numberOfElements = document.querySelectorAll(".task_main-container>div")
-    for(let i = 0 ; i < numberOfElements.length ; i++){
-        numberOfElements[i].contentEditable = true;
+// unlockContainer.addEventListener("click", function(e){
+//     let numberOfElements = document.querySelectorAll(".task_main-container>div")
+//     for(let i = 0 ; i < numberOfElements.length ; i++){
+//         numberOfElements[i].contentEditable = true;
+//     }
+
+//     // lockContainer.classList.remove("active")
+//     // unlockContainer.classList.add("active")
+// })
+
+lock.addEventListener("click",function(){
+    let taskDescElemArr = document.querySelectorAll(".task_main-container>div");
+   
+    lockFlag = !lockFlag;
+    if (lockFlag == false) {
+        lock.classList.remove("fa-lock");
+        lock.classList.add("fa-unlock-alt");
+        taskDescElemArr.forEach(function(taskDescElem){
+            taskDescElem.setAttribute("contenteditable","true");
+        })
+    }else {
+        lock.classList.remove("fa-unlock-alt");
+        lock.classList.add("fa-lock");
+        taskDescElemArr.forEach(function(taskDescElem){
+            taskDescElem.setAttribute("contenteditable","false");
+        })
     }
-
-    lockContainer.classList.remove("active")
-    unlockContainer.classList.add("active")
 })
 
 closeContainer.addEventListener("click",function(){
@@ -59,7 +81,7 @@ closeContainer.addEventListener("click",function(){
 })
 
 plusContainer.addEventListener("click",function(){
-    modal.style.display = "flex"
+    modal.style.display = "flex";
 })
 
 colorContainer.addEventListener("click",function(e){
@@ -107,6 +129,48 @@ window.addEventListener("click",function(e) {
         defaultColor = "black";
     }
 })
+
+infoBtn.addEventListener("mouseover", function () {
+    console.log("hover")
+	let functionalities = document.createElement("div");
+	functionalities.setAttribute("class", "functionalities");
+	functionalities.innerHTML = `<h2><u>Features:</u></h2>
+	<ul>
+		<li><b>Add Tasks:</b> Click '+' Icon.</li>
+		<br />
+		<li><b>Delete Tasks:</b> Click 'x' Icon.</li>
+		<br />
+		<li>
+			<b>Edit Tasks:</b> Unlock the lock by pressing the lock
+			button and click the task description.
+		</li>
+		<br />
+		<li><b>View All Tasks:</b> Double click any color in the Toolbar.</li>
+		<br />
+		<li>
+			<b>Lock/Unlock Task Editing:</b> Click Lock/Unlock icon on
+			Task Container.
+		</li>
+		<br />
+		<li><b>Change Color of a Task:</b> Click color bar of the Task Container.</li>
+		<br />
+		<li>
+			<b>Filter specific Tasks:</b> Click that specific color in the Toolbar.
+		</li>
+		<br />		
+			
+		<p>
+			<b><i>Your data will be stored for the next time you visit us.</b>
+		<i></i></p>
+	</ul>`;
+	body.appendChild(functionalities);
+});
+
+infoBtn.addEventListener("mouseout", function () {
+
+	body.removeChild(body.childNodes[body.childNodes.length - 1]);
+});
+
 
 function createTask(id, task, defaultColor, flag){
     let taskContainer = document.createElement("div");
@@ -195,10 +259,10 @@ function createTask(id, task, defaultColor, flag){
 }
 
 (function(){
+    modal.style.display = "none";
     let tasks = JSON.parse(localStorage.getItem("tasks"));
     for(let i = 0 ; i < tasks.length ; i++){
         let { id, task, color} = tasks[i];
         createTask(id,task,color,false);
     }
-    modal.style.display = "none";
 })();
